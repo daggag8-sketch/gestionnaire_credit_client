@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+{% block title %}Ajouter Credit{% endblock %}
+
+{% block content %}
+
+<div class="centrage">
+
+    <div class="container-credit">
+
+        <h2>Ajouter Credit</h2>
+
+        <form method="POST">
+
+            <input type="number" name="id_client" placeholder="ID Client" required>
+
+            <input type="number" name="montant_total" placeholder="Montant total" required>
+
+            <input type="text" name="statut" placeholder="Statut" required>
+
+            <input type="submit" value="Ajouter">
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

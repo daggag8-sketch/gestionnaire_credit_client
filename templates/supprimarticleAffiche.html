@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer articles{% endblock %}
+{% block header %}🗑 Supprimer un article{% endblock %}
+
+{% block content %}
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix unitaire</th>
+                <th>Stock</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.id }}</td>
+                <td>{{ article.nom_art }}</td>
+                <td>{{ article.prix_unitaire }} FCFA</td>
+                <td>{{ article.stock }}</td>
+                <td>{{ article.description }}</td>
+                <td>
+                    <a href="{{ url_for('routes.supprimarticle', id=article.id) }}"
+                       onclick="return confirm('Supprimer cet article ?')">
+                        <img src="{{ url_for('static', filename='css/images/delete.png') }}" height="22" width="22">
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align:center;color:var(--muted);">Aucun article</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+

@@ -1,0 +1,38 @@
+
+{% extends "base.html" %}
+
+{% block title %}Modifier Detail{% endblock %}
+
+{% block content %}
+
+<div class="centrage">
+
+    <div class="container-detail_credit">
+
+        <h2>Modifier un detail</h2>
+
+        <form method="POST">
+
+            <input type="number" name="credit" placeholder="article" value="{{detail_credit.credit }}" required>
+
+            <input type="number" name="article" placeholder="article" value="{{detail_credit.article}}" required>
+
+            <input type="number" name="quantite" placeholder="Quantite" value="{{detail_credit.quantite }}" required>
+
+            <input type="number" name="prix_unitaire" placeholder="Prix_unitaire" value="{{detail_credit.prix_unitaire}}" required>
+
+            <input type="number" name="montant" placeholder="Montant" value="{{detail_credit.montant}}" required>
+
+            <input type="number" name="montant_payer" placeholder="Montant_payer" value="{{detail_credit.montant_payer}}" required>
+
+            <input type="number" name="rest_a_payer" placeholder="Rest_a_payer" value="{{detail_credit.rest_a_payer}}" required>
+
+            <input type="submit" value="Modifier">
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

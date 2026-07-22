@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer Clients{% endblock %}
+{% block header %}🗑 Supprimer un client{% endblock %}
+
+{% block content %}
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.id }}</td>
+                <td>{{ client.nom }}</td>
+                <td>{{ client.prenom }}</td>
+                <td>{{ client.telephone }}</td>
+                <td>{{ client.adresse }}</td>
+                <td>{{ client.create_at.strftime("%d/%m/%Y") }}</td>
+                <td>
+                    <a href="{{ url_for('routes.supprimclient', id=client.id) }}"
+                       onclick="return confirm('Supprimer ce client ?')">
+                        <img src="{{ url_for('static', filename='css/images/delete.png') }}" height="22" width="22">
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align:center;color:var(--muted);">Aucun client</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+

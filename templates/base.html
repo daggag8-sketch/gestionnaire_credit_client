@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+{% if not hide_sidebar %}
+<div class="navigation">
+    <ul>
+        <li><a href="{{ url_for('routes.dashboard') }}">🏠 Dashboard</a></li>
+        <li><a href="{{ url_for('routes.client') }}">👥 Clients</a></li>
+        <li><a href="{{ url_for('routes.article') }}">📚 Articles</a></li>
+        <li><a href="{{ url_for('routes.credit') }}">💰 Crédits</a></li>
+        <li><a href="{{ url_for('routes.vente') }}">🛒 Ventes</a></li>
+        <li><a href="{{ url_for('routes.utilisateur') }}">👤 Utilisateurs</a></li>
+        <li><a href="{{ url_for('routes.parametre') }}">⚙️ Paramètres</a></li>
+        <li><a href="{{ url_for('routes.logout') }}">🚪 Déconnexion</a></li>
+    </ul>
+</div>
+{% endif %}
+
+<div class="main {% if hide_sidebar %}full{% endif %}">
+
+{% if not hide_sidebar %}
+<div class="dashboard-header">
+    <h1>{% block header %}Dashboard{% endblock %}</h1>
+</div>
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="{% if category == 'error' %}alert{% else %}alert-correct{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+</div>
+
+</div>
+
+</body>
+</html>

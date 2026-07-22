@@ -1,0 +1,586 @@
+/* ================= GOOGLE FONT ================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ================= VARIABLES ================= */
+:root{
+--primary:#2563eb;
+--dark:#0f172a;
+--dark2:#1e293b;
+--bg:#f1f5f9;
+--white:#ffffff;
+--text:#0f172a;
+--muted:#64748b;
+--shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* ================= RESET ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:var(--bg);
+font-size:13px;
+}
+
+/* ================= LAYOUT ================= */
+.container{
+display:flex;
+}
+
+.main{
+margin-left:260px;
+width:100%;
+padding:20px;
+transition:0.3s;
+}
+
+/* ================= SIDEBAR ================= */
+.navigation{
+position:fixed;
+top:0;
+left:0;
+width:260px;
+height:100vh;
+background:linear-gradient(180deg,var(--dark),var(--dark2));
+padding-top:20px;
+transition:0.3s;
+}
+
+.navigation ul{
+list-style:none;
+}
+
+.navigation ul li{
+margin:10px;
+}
+
+.navigation ul li a{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px 15px;
+color:white;
+border-radius:10px;
+text-decoration:none;
+transition:0.3s;
+}
+
+.navigation ul li a:hover{
+background:rgba(255,255,255,0.1);
+transform:translateX(5px);
+}
+
+/* ================= HEADER ================= */
+.dashboard-header h1{
+font-size:22px;
+}
+
+.dashboard-header p{
+color:var(--muted);
+}
+
+/* ================= KPI ================= */
+.cardBox{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:12px;
+margin-bottom:25px;
+}
+
+.card{
+background:white;
+padding:12px;
+border-radius:12px;
+box-shadow:var(--shadow);
+transition:0.3s;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card .numbers{
+font-size:18px;
+font-weight:600;
+}
+
+.card .cardName{
+font-size:11px;
+color:var(--muted);
+}
+
+/* ================= GRAPHS ================= */
+.charts{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:12px;
+margin-bottom:25px;
+}
+
+.chart-box{
+background:white;
+padding:12px;
+border-radius:12px;
+height:200px;
+box-shadow:var(--shadow);
+}
+
+.chart-box canvas{
+width:100% !important;
+height:150px !important;
+}
+
+/* ================= TABLE ================= */
+.table-container{
+margin-top:20px;
+overflow-x:auto;
+}
+
+.content-table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:var(--shadow);
+}
+
+.content-table th,
+.content-table td{
+padding:10px;
+border-bottom:1px solid #e2e8f0;
+font-size:13px;
+}
+
+/* ================= FORM ================= */
+form input,
+form select{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #e2e8f0;
+border-radius:8px;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:8px;
+background:var(--primary);
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+/* ================= LOGIN STYLISÉ ================= */
+.login-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(-45deg, #1e3a8a, #2563eb, #1e40af, #0f172a);
+    background-size:400% 400%;
+    animation:gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.login-container::before,
+.login-container::after{
+    content:'';
+    position:absolute;
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:0.5;
+}
+
+.login-container::before{
+    width:400px;
+    height:400px;
+    background:#3b82f6;
+    top:-100px;
+    left:-100px;
+    animation:float1 8s ease-in-out infinite;
+}
+
+.login-container::after{
+    width:350px;
+    height:350px;
+    background:#60a5fa;
+    bottom:-80px;
+    right:-80px;
+    animation:float2 10s ease-in-out infinite;
+}
+
+@keyframes float1{
+    0%,100%{transform:translate(0,0);}
+    50%{transform:translate(40px,40px);}
+}
+
+@keyframes float2{
+    0%,100%{transform:translate(0,0);}
+    50%{transform:translate(-40px,-30px);}
+}
+
+.login-box{
+    position:relative;
+    z-index:1;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.2);
+    padding:35px;
+    border-radius:20px;
+    width:340px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+    animation:fadeIn 0.6s ease;
+}
+
+.login-box h2{
+    color:white;
+    margin-bottom:15px;
+}
+
+.login-box label{
+    color:rgba(255,255,255,0.85);
+}
+
+.login-box input{
+    background:rgba(255,255,255,0.15);
+    border:1px solid rgba(255,255,255,0.25);
+    color:white;
+}
+
+.login-box input::placeholder{
+    color:rgba(255,255,255,0.5);
+}
+
+.login-box input:focus{
+    outline:none;
+    border-color:rgba(255,255,255,0.6);
+    background:rgba(255,255,255,0.2);
+}
+
+.password-box i{
+    color:rgba(255,255,255,0.7);
+}
+
+/* ================= HISTORIQUE ================= */
+.history-box{
+margin-top:20px;
+background:white;
+padding:15px;
+border-radius:12px;
+box-shadow:var(--shadow);
+}
+
+.history-table{
+width:100%;
+border-collapse:collapse;
+}
+
+.history-table th{
+background:#f1f5f9;
+padding:10px;
+font-size:12px;
+color:var(--muted);
+}
+
+.history-table td{
+padding:10px;
+border-bottom:1px solid #e2e8f0;
+}
+
+.history-table tr:hover{
+background:#f9fafb;
+}
+
+/* ================= BADGES ================= */
+.badge{
+padding:4px 8px;
+border-radius:6px;
+font-size:11px;
+color:white;
+}
+
+.badge.Paiement{
+background:#22c55e;
+}
+
+.badge.Crédit{
+background:#2563eb;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+
+.navigation{
+width:70px;
+}
+
+.main{
+margin-left:70px;
+}
+
+.cardBox,
+.charts{
+grid-template-columns:1fr;
+}
+}
+
+/* ================= AJOUTS DASHBOARD ================= */
+
+/* ICONE DANS LES CARTES KPI */
+.card .iconBx{
+    font-size:24px;
+    color:var(--primary);
+}
+
+/* PAGE SANS SIDEBAR (LOGIN) */
+.main.full{
+    margin-left:0;
+}
+
+/* ALERTES FLASH */
+.alert{
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:10px 14px;
+    border-radius:8px;
+    margin-bottom:12px;
+    font-size:13px;
+}
+
+.alert-correct{
+    background:#dcfce7;
+    color:#15803d;
+    padding:10px 14px;
+    border-radius:8px;
+    margin-bottom:12px;
+    font-size:13px;
+}
+
+/* CHAMP MOT DE PASSE AVEC OEIL (LOGIN) */
+.password-box{
+    position:relative;
+}
+
+.password-box input{
+    padding-right:38px;
+}
+
+.password-box i{
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+    cursor:pointer;
+}
+
+/* BADGE SUPPLEMENTAIRE (si utilisé un jour) */
+.badge.Vente{
+    background:#f59e0b;
+}
+
+/* ================= FORMULAIRES (ADD PAGES) ================= */
+.form-box{
+    max-width:450px;
+    margin:30px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:var(--shadow);
+}
+
+.form-box h2{
+    margin-bottom:20px;
+    font-size:18px;
+}
+
+.form-box label{
+    display:block;
+    margin-top:10px;
+    font-size:12px;
+    color:var(--muted);
+}
+
+/* ================= BARRE D'ACTIONS ================= */
+.top-actions{
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+
+.top-actions a{
+    background:var(--primary);
+    color:white;
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:12px;
+    transition:0.3s;
+}
+
+.top-actions a:hover{
+    opacity:0.85;
+}
+
+/* ================= BARRE DE RECHERCHE (réduite, à droite) ================= */
+.search-bar-wrapper{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:15px;
+}
+
+.search-input{
+    width:260px;
+    max-width:100%;
+    padding:8px 12px;
+    border-radius:8px;
+    border:1px solid #e2e8f0;
+    background:white;
+    font-size:12px;
+}
+
+@media(max-width:600px){
+    .search-input{
+        width:100%;
+    }
+}
+
+/* ================= ACTIONS DANS TABLEAU ================= */
+.content-table td a{
+    margin-right:8px;
+    color:var(--primary);
+    text-decoration:none;
+    font-size:12px;
+    font-weight:500;
+}
+
+.content-table td a:hover{
+    text-decoration:underline;
+}
+
+/* ================= BADGE STATUT SUPPLEMENTAIRE ================= */
+.badge.Precompte{
+    background:#f59e0b;
+}
+
+.badge.Complet{
+    background:#22c55e;
+}
+
+/* ================= LIGNE ARTICLE DYNAMIQUE (addvente) ================= */
+.ligne{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+}
+
+.ligne select,
+.ligne input{
+    flex:1;
+    min-width:120px;
+    margin:0;
+}
+
+/* ICONES ACTIONS (edit/delete) */
+.content-table td img{
+    vertical-align:middle;
+    opacity:0.7;
+    transition:0.2s;
+}
+
+.content-table td img:hover{
+    opacity:1;
+}
+
+.badge.Annulee{
+    background:#94a3b8;
+}
+
+/* ================= BOUTONS D'ACTION DANS LES TABLEAUX ================= */
+.action-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:5px 10px;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:500;
+    text-decoration:none;
+    margin-right:6px;
+    transition:0.2s;
+    border:1px solid transparent;
+}
+
+.action-btn:last-child{
+    margin-right:0;
+}
+
+/* MODIFIER (bleu) */
+.action-btn.edit{
+    background:#eff6ff;
+    color:var(--primary);
+    border-color:#bfdbfe;
+}
+.action-btn.edit:hover{
+    background:var(--primary);
+    color:white;
+}
+
+/* SUPPRIMER (rouge) */
+.action-btn.delete{
+    background:#fef2f2;
+    color:#dc2626;
+    border-color:#fecaca;
+}
+.action-btn.delete:hover{
+    background:#dc2626;
+    color:white;
+}
+
+/* VOIR (gris/bleu clair) */
+.action-btn.view{
+    background:#f1f5f9;
+    color:var(--dark2);
+    border-color:#e2e8f0;
+}
+.action-btn.view:hover{
+    background:var(--dark2);
+    color:white;
+}
+
+/* ANNULER (orange/rouge doux) */
+.action-btn.cancel{
+    background:#fff7ed;
+    color:#ea580c;
+    border-color:#fed7aa;
+}
+.action-btn.cancel:hover{
+    background:#ea580c;
+    color:white;
+}
+.badge.Credit{
+    background:#ef4444;
+}

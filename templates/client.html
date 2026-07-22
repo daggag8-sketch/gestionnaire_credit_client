@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block header %}👥 Mes clients{% endblock %}
+
+{% block content %}
+
+<div class="top-actions">
+    <a href="{{ url_for('routes.addclient') }}">➕ Ajouter</a>
+</div>
+
+<div class="search-bar-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un client...">
+</div>
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Date</th>
+                <th>Statut crédit</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.id }}</td>
+                <td>{{ client.nom }}</td>
+                <td>{{ client.prenom }}</td>
+                <td>{{ client.telephone }}</td>
+                <td>{{ client.adresse }}</td>
+                <td>{{ client.create_at.strftime("%d/%m/%Y") }}</td>
+                <td>
+                    {% if credits_en_cours[client.id] > 0 %}
+                        <span class="badge Credit">⚠ {{ credits_en_cours[client.id] }} FCFA dû</span>
+                    {% else %}
+                        <span class="badge Complet">✓ À jour</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('routes.show_update_form', id=client.id) }}" class="action-btn edit">Modifier</a>
+                    <a href="{{ url_for('routes.historique_client', id=client.id) }}" class="action-btn view">Historique</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" style="text-align:center;color:var(--muted);">Aucun client</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    document.querySelectorAll(".content-table tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Ajouter Vente{% endblock %}
+
+{% block content %}
+
+<div class="form-box" style="max-width:650px;">
+
+    <h2>🛒 Ajouter une vente</h2>
+
+    <form method="POST" id="venteForm">
+
+        <label>Client</label>
+        <select name="client_id" required>
+            {% for client in clients %}
+                <option value="{{ client.id }}">{{ client.nom }} {{ client.prenom }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Montant payé</label>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <input type="number" id="montantPaye" name="montant_paye" value="0" step="0.01" style="flex:1;">
+            <button type="button" onclick="payerTotal()" style="white-space:nowrap;">Payer le total</button>
+        </div>
+
+        <hr style="margin:20px 0;">
+
+        <h3 style="margin-bottom:10px;">Articles</h3>
+
+        <div id="articles-container">
+            <div class="ligne">
+                <select name="article_id[]" class="article-select" onchange="calculerLigne(this)" required>
+                    <option value="">-- Choisir un article --</option>
+                    {% for article in articles %}
+                        <option value="{{ article.id }}" data-prix="{{ article.prix_unitaire }}">
+                            {{ article.nom_art }} (stock: {{ article.stock }})
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="number" name="quantite[]" placeholder="Quantité" min="1" oninput="calculerLigne(this)" required>
+                <input type="number" name="prix_unitaire[]" placeholder="Prix unitaire" step="0.01" readonly required>
+                <input type="number" class="ligne-total" placeholder="Total" step="0.01" readonly>
+            </div>
+        </div>
+
+        <button type="button" onclick="addLigne()">➕ Ajouter un article</button>
+
+        <div style="margin-top:20px; text-align:right; font-size:16px;">
+            <strong>Montant total : <span id="totalGeneral">0</span> FCFA</strong>
+        </div>
+
+        <br>
+        <button type="submit">💾 Enregistrer</button>
+
+    </form>
+
+</div>
+
+<script>
+
+// ✅ Calcule le total d'une ligne (quantité × prix) et met à jour le total général
+function calculerLigne(el) {
+    const ligne = el.closest('.ligne');
+    const select = ligne.querySelector('.article-select');
+    const prixInput = ligne.querySelector('input[name="prix_unitaire[]"]');
+    const quantiteInput = ligne.querySelector('input[name="quantite[]"]');
+    const totalInput = ligne.querySelector('.ligne-total');
+
+    const option = select.options[select.selectedIndex];
+    const prix = parseFloat(option.getAttribute('data-prix')) || 0;
+    prixInput.value = prix;
+
+    const quantite = parseFloat(quantiteInput.value) || 0;
+    const total = prix * quantite;
+
+    totalInput.value = total.toFixed(2);
+
+    mettreAJourTotalGeneral();
+}
+
+// ✅ Additionne toutes les lignes pour le total général
+function mettreAJourTotalGeneral() {
+    let total = 0;
+    document.querySelectorAll('.ligne-total').forEach(input => {
+        total += parseFloat(input.value) || 0;
+    });
+    document.getElementById('totalGeneral').innerText = total.toFixed(2);
+}
+
+// ✅ Remplit le champ "Montant payé" avec le total général
+function payerTotal() {
+    const total = document.getElementById('totalGeneral').innerText;
+    document.getElementById('montantPaye').value = total;
+}
+
+// ✅ Ajoute une nouvelle ligne article
+function addLigne() {
+    let container = document.getElementById("articles-container");
+
+    let div = document.createElement("div");
+    div.classList.add("ligne");
+
+    div.innerHTML = `
+        <select name="article_id[]" class="article-select" onchange="calculerLigne(this)" required>
+            <option value="">-- Choisir un article --</option>
+            {% for article in articles %}
+                <option value="{{ article.id }}" data-prix="{{ article.prix_unitaire }}">
+                    {{ article.nom_art }} (stock: {{ article.stock }})
+                </option>
+            {% endfor %}
+        </select>
+
+        <input type="number" name="quantite[]" placeholder="Quantité" min="1" oninput="calculerLigne(this)" required>
+        <input type="number" name="prix_unitaire[]" placeholder="Prix unitaire" step="0.01" readonly required>
+        <input type="number" class="ligne-total" placeholder="Total" step="0.01" readonly>
+    `;
+
+    container.appendChild(div);
+}
+</script>
+
+{% endblock %}

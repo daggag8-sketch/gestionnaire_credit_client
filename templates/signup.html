@@ -1,0 +1,34 @@
+
+{% extends "base.html" %} {% block title %}S'enregistrer - Client{% endblock %}
+{% block content %}
+<div class="cadre">
+    <div class="titre"><h2>S'inscrire</h2></div>
+    <div class="Formulaire">
+        <form action="" method="post">
+            <label for="nom">Nom du client:</label>
+            <div class="input">
+                <input type="text" id="nom" name="nom">
+            <div class="input">
+            <label for="password">Mot de passe:</label>
+            <div class="input">
+                <input type="password" id="password" name="password">
+            <label for="telephone">Numero de telephone:</label>
+            <div class="input">
+               <input type="number" id="telephone" name="telephone">
+            </div>
+            <input class="slide-left" type="submit" name="submit" value="S'enregistrer">
+            <a href="/login"><p>Vous avez déjà un compte?</p></a>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
+41
+
+
+
+
+
+
+    
+

@@ -1,0 +1,38 @@
+
+{% extends "base.html" %}
+
+{% block title %}Ajouter Detail Crédit{% endblock %}
+
+{% block content %}
+
+<div class="centrage">
+
+    <div class="container-detail_credit">
+
+        <h2>Ajouter Detail Crédit</h2>
+
+        <form method="POST">
+
+            <input type="number" name="credit" placeholder="Crédit" required>
+
+            <input type="number" name="article" placeholder="Article" required>
+
+            <input type="number" name="quantite" placeholder="Quantité" required>
+
+            <input type="number" name="prix_unitaire" placeholder="Prix unitaire" required>
+
+            <input type="number" name="montant" placeholder="Montant" required>
+
+            <input type="number" name="montant_payer" placeholder="Montant payer" required>
+
+            <input type="number" name="reste_a_payer" placeholder="Reste à payer" required>
+
+            <input type="submit" value="Ajouter">
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

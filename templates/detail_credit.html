@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block header %}📄 Détail du crédit{% endblock %}
+
+{% block content %}
+
+<div class="top-actions">
+    <a href="{{ url_for('routes.credit') }}">⬅ Retour aux crédits</a>
+</div>
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Article</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Montant payé</th>
+                <th>Reste à payer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail_credit in detail_credits %}
+            <tr>
+                <td>{{ detail_credit.id }}</td>
+                <td>{{ detail_credit.credit_rel.client.nom }} {{ detail_credit.credit_rel.client.prenom }}</td>
+                <td>{{ detail_credit.article_rel.nom_art }}</td>
+                <td>{{ detail_credit.quantite }}</td>
+                <td>{{ detail_credit.prix_unitaire }} FCFA</td>
+                <td>{{ detail_credit.montant }} FCFA</td>
+                <td>{{ detail_credit.date.strftime('%d/%m/%Y') }}</td>
+                <td>{{ detail_credit.montant_payer }} FCFA</td>
+                <td>{{ detail_credit.rest_a_payer }} FCFA</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" style="text-align:center;color:var(--muted);">Aucun détail de crédit</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="top-actions" style="margin-top:20px;">
+    <a href="{{ url_for('routes.credit') }}">⬅ Retour aux crédits</a>
+</div>
+
+{% endblock %}

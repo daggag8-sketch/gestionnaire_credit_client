@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Verser un paiement{% endblock %}
+
+{% block content %}
+
+<div class="form-box">
+
+    <h2>💵 Verser un paiement</h2>
+
+    <p style="margin-bottom:15px; color:var(--muted); font-size:13px;">
+        Client : <strong>{{ vente.client.nom }} {{ vente.client.prenom }}</strong><br>
+        Montant total : <strong>{{ vente.montant_total }} FCFA</strong><br>
+        Déjà payé : <strong>{{ vente.montant_paye }} FCFA</strong><br>
+        Reste à payer : <strong style="color:#ef4444;">{{ vente.reste }} FCFA</strong>
+    </p>
+
+    <form method="POST">
+        <label>Montant versé</label>
+        <input type="number" name="montant" step="0.01" min="0.01" max="{{ vente.reste }}" required>
+
+        <br><br>
+        <button type="submit">💾 Enregistrer le paiement</button>
+    </form>
+
+</div>
+
+<div class="history-box" style="margin-top:20px;">
+    <h3 style="margin-bottom:10px;">📜 Historique des versements</h3>
+
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paiement in vente.paiements %}
+            <tr>
+                <td>{{ paiement.date.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ paiement.montant }} FCFA</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2" style="text-align:center;color:var(--muted);">Aucun versement encore</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

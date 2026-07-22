@@ -1,0 +1,41 @@
+
+{% extends "base.html" %}
+
+{% block title %}Modifier Credits{% endblock %}
+
+{% block content %}
+
+<h1>Liste des credits à modifier</h1>
+
+<div class="table">
+    <table class="content-table">
+        <thead>
+            <tr>
+                 <th>ID</th>
+                <th>ID_client</th>
+                <th>Date</th>
+                <th>Montant_total</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for credit in credits %}
+            <tr>
+               <td>{{credit.id}}</td>
+                <td>{{ credit.client.nom }} {{ credit.client.prenom }}</td>
+                <td>{{credit.date}}</td>
+                <td>{{credit.montant_total}}</td>
+                <td>{{credit.statut}}</td>
+               <td>
+                        <a href="{{ url_for('routes.credit_update',id=credit.id)}}"><img src="{{url_for('static',filename='css/images/edit.png')}}" height="22px" width="22px"></a>
+                    </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

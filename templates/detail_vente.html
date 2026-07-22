@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Détail Vente{% endblock %}
+
+{% block content %}
+
+<div class="history-box">
+
+    <h2 style="margin-bottom:15px;">🧾 Détail de la vente #{{ vente.id }}</h2>
+
+    <div class="cardBox" style="margin-bottom:20px;">
+        <div class="card">
+            <div>
+                <div class="numbers">{{ vente.client.nom if vente.client else "N/A" }}</div>
+                <div class="cardName">Client</div>
+            </div>
+        </div>
+        <div class="card">
+            <div>
+                <div class="numbers">{{ vente.date.strftime("%d/%m/%Y") if vente.date else "" }}</div>
+                <div class="cardName">Date</div>
+            </div>
+        </div>
+        <div class="card">
+            <div>
+                <div class="numbers">{{ vente.montant_total }} FCFA</div>
+                <div class="cardName">Total</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="margin-bottom:10px;">📦 Articles</h3>
+
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in vente.lignes %}
+            <tr>
+                <td>{{ ligne.article.nom_art }}</td>
+                <td>{{ ligne.quantite }}</td>
+                <td>{{ ligne.prix_unitaire }} FCFA</td>
+                <td>{{ ligne.montant }} FCFA</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="top-actions" style="margin-top:20px;">
+    <a href="{{ url_for('routes.vente') }}">⬅ Retour</a>
+    {% if vente.statut in ['credit', 'precompte'] %}
+    <a href="{{ url_for('routes.payer_vente', id=vente.id) }}">💵 Verser un paiement</a>
+    {% endif %}
+    <a href="{{ url_for('routes.supprimvente', id=vente.id) }}"
+       onclick="return confirm('Supprimer cette vente ?')">❌ Supprimer</a>
+</div>
+
+</div>
+
+{% endblock %}

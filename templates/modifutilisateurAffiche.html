@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Utilisateurs{% endblock %}
+{% block header %}✏ Modifier un utilisateur{% endblock %}
+
+{% block content %}
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom d'utilisateur</th>
+                <th>Téléphone</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+            <tr>
+                <td>{{ utilisateur.id }}</td>
+                <td>{{ utilisateur.nom_user }}</td>
+                <td>{{ utilisateur.telephone }}</td>
+                <td><span class="badge Complet">{{ utilisateur.role }}</span></td>
+                <td>
+                    <a href="{{ url_for('routes.utilisateur_update', id=utilisateur.id) }}">
+                        <img src="{{ url_for('static', filename='css/images/edit.png') }}" height="22" width="22">
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;color:var(--muted);">Aucun utilisateur</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+

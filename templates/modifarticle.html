@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier article{% endblock %}
+
+{% block content %}
+
+<div class="form-box">
+
+    <h2>✏ Modifier un article</h2>
+
+    <form method="POST">
+        <input type="text" name="nom_art" placeholder="Nom" value="{{ article.nom_art }}" required>
+        <input type="number" name="prix_unitaire" step="0.01" placeholder="Prix unitaire" value="{{ article.prix_unitaire }}" required>
+        <input type="number" name="stock" placeholder="Stock" value="{{ article.stock }}" required>
+        <input type="text" name="description" placeholder="Description" value="{{ article.description }}" required>
+        <button type="submit">Modifier</button>
+    </form>
+
+</div>
+
+{% endblock %}

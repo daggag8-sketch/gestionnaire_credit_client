@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block header %}👤 Mes utilisateurs{% endblock %}
+
+{% block content %}
+
+<div class="top-actions">
+    <a href="{{ url_for('routes.addutilisateur') }}">➕ Ajouter</a>
+</div>
+
+<div class="search-bar-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un utilisateur...">
+</div>
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom d'utilisateur</th>
+                <th>Téléphone</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+            <tr>
+                <td>{{ utilisateur.id }}</td>
+                <td>{{ utilisateur.nom_user }}</td>
+                <td>{{ utilisateur.telephone }}</td>
+                <td><span class="badge Complet">{{ utilisateur.role }}</span></td>
+                <td>
+                    <a href="{{ url_for('routes.utilisateur_update', id=utilisateur.id) }}" class="action-btn edit">✏ Modifier</a>
+                    <a href="{{ url_for('routes.supprimutilisateur', id=utilisateur.id) }}" class="action-btn delete"
+                    onclick="return confirm('Supprimer cet utilisateur ?')">🗑 Supprimer</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align:center;color:var(--muted);">Aucun utilisateur</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    document.querySelectorAll(".content-table tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Supprimer Vente{% endblock %}
+{% block header %}🗑 Supprimer une vente{% endblock %}
+
+{% block content %}
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vente in ventes %}
+            <tr>
+                <td>{{ vente.id }}</td>
+                <td>{{ vente.client.nom if vente.client else "N/A" }}</td>
+                <td>{{ vente.montant_total }} FCFA</td>
+                <td>
+                    <a href="{{ url_for('routes.supprimvente', id=vente.id) }}"
+                       onclick="return confirm('Supprimer cette vente ?')">❌ Supprimer</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align:center;color:var(--muted);">Aucune vente</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

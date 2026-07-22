@@ -1,0 +1,44 @@
+
+{% extends "base.html" %}
+
+{% block title %}Supprimer Credits{% endblock %}
+
+{% block content %}
+
+<h1>Liste des credits à suprimer</h1>
+
+<div class="table">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Montant total</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+           {% for credit in credits %}
+            <tr>
+                <td>{{ credit.id }}</td>
+                <td>{{ credit.client.nom }} {{ credit.client.prenom }}</td>
+                <td>{{ credit.date.strftime('%d/%m/%Y') }}</td>
+                <td>{{ credit.montant_total }}</td>
+                <td>{{ credit.statut }}</td>
+
+                <td>
+                    <a href="{{url_for('routes.supprimcredit',id=credit.id)}}"><img src="{{url_for('static',filename='css/images/delete.png')}}" height="22px" width="22px">
+                </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+

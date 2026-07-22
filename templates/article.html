@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block header %}📚 Mes articles{% endblock %}
+
+{% block content %}
+
+<div class="top-actions">
+    <a href="{{ url_for('routes.addarticle') }}">➕ Ajouter</a>
+</div>
+
+<div class="search-bar-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un article...">
+</div>
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix unitaire</th>
+                <th>Stock</th>
+                <th>Description</th>
+                <th>Ventes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.id }}</td>
+                <td>{{ article.nom_art }}</td>
+                <td>{{ article.prix_unitaire }} FCFA</td>
+                <td>
+                    {% if article.stock == 0 %}
+                        <span class="badge Annulee">⛔ Rupture</span>
+                    {% elif article.stock <= 5 %}
+                        <span class="badge Precompte">⚠ {{ article.stock }} (faible)</span>
+                    {% else %}
+                        {{ article.stock }}
+                    {% endif %}
+                </td>
+                <td>{{ article.description }}</td>
+                <td>{{ ventes_par_article[article.id] }} vente(s)</td>
+                <td>
+                    <a href="{{ url_for('routes.mise_a_jour', id=article.id) }}" class="action-btn edit">Modifier</a>
+                    {% if ventes_par_article[article.id] == 0 %}
+                    <a href="{{ url_for('routes.supprimarticle', id=article.id) }}" class="action-btn delete"
+                       onclick="return confirm('Supprimer cet article ?')">Supprimer</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align:center;color:var(--muted);">Aucun article</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    document.querySelectorAll(".content-table tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

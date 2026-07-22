@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Utilisateur{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<div class="form-box">
+
+    <h2>✏ Modifier un utilisateur</h2>
+
+    <form method="POST">
+        <input type="text" name="nom_user" placeholder="Nom d'utilisateur" value="{{ utilisateur.nom_user }}" required>
+
+        <div class="password-box">
+            <input type="password" id="password" name="mot_de_passe" placeholder="Nouveau mot de passe (optionnel)">
+            <i class="fa-solid fa-eye-slash" id="eye" onclick="togglePassword()"></i>
+        </div>
+
+        <input type="text" name="telephone" placeholder="Téléphone" value="{{ utilisateur.telephone }}" required>
+        <input type="text" name="role" placeholder="Rôle" value="{{ utilisateur.role }}" required>
+        <button type="submit">Modifier</button>
+    </form>
+
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const eye = document.getElementById("eye");
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eye.classList.remove("fa-eye-slash");
+        eye.classList.add("fa-eye");
+    } else {
+        passwordInput.type = "password";
+        eye.classList.remove("fa-eye");
+        eye.classList.add("fa-eye-slash");
+    }
+}
+</script>
+
+{% endblock %}

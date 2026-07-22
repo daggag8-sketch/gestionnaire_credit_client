@@ -1,0 +1,807 @@
+
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- SIDEBAR -->
+<div class="navigation">
+    <ul>
+        <li>
+            <a href="{{ url_for('routes.dashboard') }}">
+                <span class="icon">🏠</span>
+                <span class="title">Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('routes.client') }}">
+                <span class="icon">👥</span>
+                <span class="title">Clients</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('routes.article') }}">
+                <span class="icon">📚</span>
+                <span class="title">Articles</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('routes.credit') }}">
+                <span class="icon">💰</span>
+                <span class="title">Crédits</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url_for('routes.detail_credit') }}">
+                <span class="icon">📄</span>
+                <span class="title">Détails crédits</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/">
+                <span class="icon">🚪</span>
+                <span class="title">Déconnexion</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- HEADER -->
+<div class="dashboard-header">
+    <h1>📊 Tableau de Bord</h1>
+    <p>Cahier numérique</p>
+</div>
+
+<!-- TOP ACTIONS -->
+<div class="top-actions">
+    <a href="{{ url_for('routes.credit') }}">💰 Voir les crédits</a>
+    <a href="{{ url_for('routes.detail_credit') }}">📄 Voir les détails crédits</a>
+</div>
+
+<!-- KPI -->
+<div class="kpi-container">
+    <div class="kpi-card">
+        <h3>Clients</h3>
+        <p>{{ clients|length }}</p>
+    </div>
+
+    <div class="kpi-card">
+        <h3>Articles</h3>
+        <p>{{ articles|length }}</p>
+    </div>
+
+    <div class="kpi-card">
+        <h3>Crédits</h3>
+        <p>{{ credits|length }}</p>
+    </div>
+
+    <div class="kpi-card">
+        <h3>Détails crédits</h3>
+        <p>{{ detail_credits|length }}</p>
+    </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+
+    <!-- CLIENT -->
+    <div class="card">
+        <h2>👥 Clients</h2>
+        <a href="{{ url_for('routes.addclient') }}">Créer</a>
+        <a href="{{ url_for('routes.client') }}">Liste</a>
+        <a href="{{ url_for('routes.modifclientAffiche') }}">Modifier</a>
+        <a href="{{ url_for('routes.supprimclientAffiche') }}">Supprimer</a>
+    </div>
+
+    <!-- ARTICLE -->
+    <div class="card">
+        <h2>📚 Articles</h2>
+        <a href="{{ url_for('routes.addarticle') }}">Créer</a>
+        <a href="{{ url_for('routes.article') }}">Liste</a>
+        <a href="{{ url_for('routes.modifarticleAffiche') }}">Modifier</a>
+        <a href="{{ url_for('routes.supprimarticleAffiche') }}">Supprimer</a>
+    </div>
+
+    <!-- CREDIT -->
+    <div class="card">
+        <h2>💰 Crédits</h2>
+        <a href="{{ url_for('routes.addcredit') }}">Créer</a>
+        <a href="{{ url_for('routes.credit') }}">Liste</a>
+    </div>
+
+    <!-- DETAIL CREDIT -->
+    <div class="card">
+        <h2>📄 Détails crédits</h2>
+        <a href="{{ url_for('routes.adddetail_credit') }}">Créer</a>
+        <a href="{{ url_for('routes.detail_credit') }}">Liste</a>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+
+from flask import render_template
+from app import db
+from app.models import Article
+from sqlalchemy import func
+
+@routes.route('/dashboard')
+def dashboard():
+
+    # 💰 Somme totale des articles (prix)
+    total_articles = db.session.query(func.sum(Article.prix)).scalar()
+
+    # éviter None si table vide
+    if total_articles is None:
+        total_articles = 0
+
+    return render_template(
+        "dashboard.html",
+        total_articles=total_articles
+    )
+
+
+
+
+    from sqlalchemy import func
+from app.models import Paiement   # ⚠️ adapte si ton modèle a un autre nom
+
+@routes.route('/dashboard')
+def dashboard():
+
+    # 💰 total des paiements
+    total_paiements = db.session.query(func.sum(Detail_credit.montant)).scalar()
+
+    if total_paiements is None:
+        total_paiements = 0
+
+    return render_template(
+        "dashboard.html",
+        total_paiements=total_paiements
+    )
+
+
+
+
+    from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from .models import Paiement, Credit
+
+def dashboard(request):
+    total_clients = Client.objects.count()
+    total_articles = Article.objects.count()
+    total_credits = Credit.objects.count()
+    
+    total_paiements = Paiement.objects.aggregate(total=Sum('montant'))['total'] or 0
+    total_prix_articles = Article.objects.aggregate(total=Sum('prix'))['total'] or 0
+
+    # 📈 évolution des paiements par mois
+    paiements_par_mois = (
+        Paiement.objects
+        .annotate(mois=TruncMonth('date'))
+        .values('mois')
+        .annotate(total=Sum('montant'))
+        .order_by('mois')
+    )
+
+    labels = [p['mois'].strftime('%b') for p in paiements_par_mois]
+    data = [p['total'] for p in paiements_par_mois]
+
+    context = {
+        'total_clients': total_clients,
+        'total_articles': total_articles,
+        'total_credits': total_credits,
+        'total_paiements': total_paiements,
+        'total_prix_articles': total_prix_articles,
+        'labels': labels,
+        'data': data,
+    }
+
+    return render(request, 'dashboard.html', context)
+
+
+
+
+    from flask import Blueprint,render_template,request,flash,redirect,url_for
+from .model import Client, Article, Credit, Detail_credit, Utilisateur
+from .extensions import db
+from werkzeug.security import generate_password_hash,check_password_hash
+from flask_login import login_user, login_required, logout_user, current_user
+from sqlalchemy import func
+
+routes = Blueprint("routes",__name__)
+
+# 🔐 LOGIN
+
+@routes.route('/', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('routes.dashboard'))
+
+    if request.method == 'POST':
+        telephone = request.form.get('telephone')
+        mot_de_passe = request.form.get('mot_de_passe')
+
+        user = Utilisateur.query.filter_by(telephone=telephone).first()
+
+        if user and check_password_hash(user.mot_de_passe, mot_de_passe):
+            login_user(user)
+            flash("Connexion réussie", "success")
+            return redirect(url_for('routes.dashboard'))
+        else:
+            flash("Identifiants incorrects", "error")
+
+    return render_template("login.html")
+
+
+# 🚪 LOGOUT
+@routes.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Déconnexion réussie", "success")
+    return redirect(url_for('routes.login'))
+
+
+# 🔹 DASHBOARD
+
+@routes.route('/dashboard')
+def dashboard():
+
+    total_clients = Client.query.count()
+    total_articles = Article.query.count()
+    total_credits = Credit.query.count()
+
+    total_prix_articles = db.session.query(func.sum(Article.prix_unitaire)).scalar()
+    if total_prix_articles is None:
+        total_prix_articles = 0
+
+    total_paiements = db.session.query(func.sum(Detail_credit.montant_payer)).scalar()
+    if total_paiements is None:
+        total_paiements = 0
+
+    # 🔥 HISTORIQUE DES MOUVEMENTS (DERNIERS ENREGISTREMENTS)
+    mouvements = []
+
+    derniers_paiements = Detail_credit.query.order_by(Detail_credit.id.desc()).limit(5).all()
+
+    for p in derniers_paiements:
+        mouvements.append({
+            "type": "Paiement",
+            "client": f"Client {p.credit}",  # adapte si tu as relation Client
+            "montant": p.montant_payer,
+            "date": p.date  # ⚠️ remplace par date si tu as created_at
+        })
+
+    return render_template(
+        "dashboard.html",
+        total_clients=total_clients,
+        total_articles=total_articles,
+        total_credits=total_credits,
+        total_prix_articles=total_prix_articles,
+        total_paiements=total_paiements,
+        mouvements=mouvements   # 🔥 AJOUT IMPORTANT
+    )
+# 🔹 AJOUT CLIENT
+
+@routes.route('/addclient', methods=['GET','POST'])
+@login_required
+def addclient():
+    if request.method == 'POST':
+        nom = request.form.get('nom')
+        prenom = request.form.get('prenom')
+        telephone = request.form.get('telephone')
+        adresse = request.form.get('adresse')
+
+        if len(nom) < 1:
+            flash("nom trop court", "error")
+        elif len(prenom) < 1:
+            flash("prenom trop court", "error")
+        elif len(telephone) < 2:
+            flash("telephone invalide", "error")
+        elif len(adresse) < 2:
+            flash("adresse invalide", "error")
+        else:
+            new_client = Client(
+                nom=nom,
+                prenom=prenom,
+                telephone=telephone,
+                adresse=adresse
+            )
+
+            db.session.add(new_client)
+            db.session.commit()
+
+            flash("Client ajouté !", "success")
+            return redirect(url_for('routes.client'))
+
+    return render_template("addclient.html")
+
+
+# 🔹 LISTE CLIENT
+@routes.route('/client')
+@login_required
+def client():
+    clients = Client.query.all()
+    return render_template("client.html", clients=clients)
+
+
+# 🔹 AFFICHAGE MODIFIER
+@routes.route('/modifclientAffichage')
+@login_required
+def modifclientAffiche():
+    clients = Client.query.all()
+    return render_template("modifclientAffiche.html", clients=clients)
+
+
+# ✅ correction route
+@routes.route('/modifclient/<int:id>', methods=['POST'])
+@login_required
+def modifclient(id):
+    client = Client.query.get_or_404(id)
+
+    client.nom = request.form.get('nom')
+    client.prenom = request.form.get('prenom')
+    client.telephone = request.form.get('telephone')
+    client.adresse = request.form.get('adresse')
+
+    db.session.commit()
+    flash("Client modifié !", "success")
+    return redirect(url_for('routes.modifclientAffiche'))
+
+
+# ✅ correction route
+@routes.route('/modifclient/<int:id>', methods=['GET'])
+@login_required
+def show_update_form(id):
+    client = Client.query.get_or_404(id)
+    return render_template('modifclient.html', client=client)
+
+
+# 🔹 SUPPRESSION CLIENT
+@routes.route('/supprimclientAffichage')
+@login_required
+def supprimclientAffiche():
+    clients = Client.query.all()
+    return render_template("supprimclientAffiche.html", clients=clients)
+
+
+# ✅ correction route + indentation try
+@routes.route('/supprimclient/<int:id>')
+@login_required
+def supprimclient(id):
+    client = Client.query.get_or_404(id)
+
+    try:
+        db.session.delete(client)
+        db.session.commit()
+        flash("Client supprimé !", "success")
+    except:
+        flash("Erreur suppression", "error")
+
+    return redirect(url_for('routes.supprimclientAffiche'))
+# ================= ARTICLE =================
+
+@routes.route('/addarticle', methods=['GET','POST'])
+@login_required
+def addarticle():
+    if request.method == 'POST':
+        nom_art = request.form.get('nom_art')
+        prix_unitaire = float(request.form.get('prix_unitaire'))
+        stock = request.form.get('stock')
+        description = request.form.get('description')
+
+        if len(nom_art) < 1:
+            flash("nom trop court", "error")
+        elif prix_unitaire <= 0:
+            flash("prix doit etre superieur a zero", "error")
+        elif len(stock) < 1:
+            flash("stock invalide", "error")
+        elif len(description) < 2:
+            flash("description invalide", "error")
+        else:
+            new_article = Article(
+                nom_art=nom_art,
+                prix_unitaire=prix_unitaire,
+                stock=stock,
+                description=description
+            )
+
+            db.session.add(new_article)
+            db.session.commit()
+            flash("article ajouté!", category='success')
+            return redirect(url_for('routes.article'))  # ✅ corrigé
+
+    return render_template("addarticle.html")  # ✅ corrigé
+
+
+@routes.route('/article')
+@login_required
+def article():
+    articles = Article.query.all()
+    return render_template("article.html", articles=articles)
+
+
+@routes.route('/modifarticleAffichage')
+@login_required
+def modifarticleAffiche():
+    articles = Article.query.all()
+    return render_template("modifarticleAffiche.html", articles=articles)
+
+
+# ✅ correction route
+@routes.route('/modifarticle/<int:id>', methods=['POST'])
+@login_required
+def modifarticle(id):
+    article = Article.query.get(id)
+
+    article.nom_art = request.form.get('nom_art')
+    article.prix_unitaire = request.form.get('prix_unitaire')
+    article.stock = request.form.get('stock')
+    article.description = request.form.get('description')
+
+    db.session.commit()
+    return redirect(url_for('routes.modifarticleAffiche'))
+
+
+# ✅ correction route
+@routes.route('/modifarticle/<int:id>', methods=['GET'])
+@login_required
+def mise_a_jour(id):
+    article = Article.query.get(id)
+    return render_template('modifarticle.html', article=article)
+
+
+@routes.route('/supprimarticleAffichage')
+@login_required
+def supprimarticleAffiche():
+    articles = Article.query.all()
+    return render_template("supprimarticleAffiche.html", articles=articles)
+
+
+# ✅ correction route
+@routes.route('/supprimarticle/<int:id>')
+@login_required
+def supprimarticle(id):
+    article_delete = Article.query.get(id)
+
+    db.session.delete(article_delete)
+    db.session.commit()
+
+    flash("article supprimé!", category='success')
+    return redirect(url_for('routes.supprimarticleAffiche'))
+# ================= CREDIT =================
+
+@routes.route('/addcredit', methods=['GET','POST'])
+@login_required
+def addcredit():
+    if request.method == 'POST':
+
+        id_client = int(request.form.get('id_client'))
+        montant_total = request.form.get('montant_total')
+        statut = request.form.get('statut')
+
+        if id_client <= 0:
+            flash("id doit etre superieur a zero", "error")
+        elif float(montant_total) <= 0:
+            flash("monatnt doit etre superieur a zero", "error")
+        elif len(statut) < 1:
+            flash("statut invalide", "error")
+        else:
+            new_credit = Credit(
+                id_client=id_client,
+                montant_total=montant_total,
+                statut=statut
+            )
+            db.session.add(new_credit)
+            db.session.commit()
+            flash("Crédit ajouté!", "success")
+            return redirect(url_for('routes.credit'))
+
+    return render_template("addcredit.html")
+
+
+@routes.route('/credit')
+@login_required
+def credit():
+    credits = Credit.query.all()
+    return render_template("credit.html", credits=credits)
+
+
+@routes.route('/modifcreditAffichage')
+@login_required
+def modifcreditAffiche():
+    credits = Credit.query.all()
+    return render_template("modifcreditAffiche.html", credits=credits)
+
+
+# ✅ correction route
+@routes.route('/modifcredit/<int:id>', methods=['POST'])
+@login_required
+def modifcredit(id):
+    credit = Credit.query.get(id)
+
+    credit.id_client = request.form.get('id_client')
+    credit.montant_total = request.form.get('montant_total')
+    credit.statut = request.form.get('statut')
+
+    db.session.commit()
+    return redirect(url_for('routes.modifcreditAffiche'))
+
+
+# ✅ correction route
+@routes.route('/modifcredit/<int:id>', methods=['GET'])
+@login_required
+def credit_update(id):
+    credit = Credit.query.get(id)
+    return render_template('modifcredit.html', credit=credit)
+
+
+@routes.route('/supprimcreditAffichage')
+@login_required
+def supprimcreditAffiche():
+    credits = Credit.query.all()
+    return render_template("supprimcreditAffiche.html", credits=credits)
+
+
+# ✅ correction route
+@routes.route('/supprimcredit/<int:id>')
+@login_required
+def supprimcredit(id):
+    credit_delete = Credit.query.get(id)
+
+    db.session.delete(credit_delete)
+    db.session.commit()
+
+    flash("credit supprimé!", category='success')
+    return redirect(url_for('routes.supprimcreditAffiche'))
+
+# ================= DETAIL CREDIT =================
+
+@routes.route('/adddetail_credit', methods=['GET', 'POST'])
+@login_required
+def adddetail_credit():
+    if request.method == 'POST':
+
+        credit = request.form.get('credit')
+        article = request.form.get('article')
+        quantite = request.form.get('quantite')
+        prix_unitaire = request.form.get('prix_unitaire')
+        montant = request.form.get('montant')
+        montant_payer = request.form.get('montant_payer')
+        rest_a_payer = request.form.get('rest_a_payer')
+
+        # 🔥 SAFE CONVERSIONS
+        try:
+            credit = int(credit or 0)
+            article = int(article or 0)
+            quantite = int(quantite or 0)
+            prix_unitaire = float(prix_unitaire or 0)
+            montant = float(montant or 0)
+            montant_payer = float(montant_payer or 0)
+            rest_a_payer = float(rest_a_payer or 0)
+
+        except ValueError:
+            flash("Veuillez entrer des valeurs valides", "error")
+            return redirect(url_for('routes.adddetail_credit'))
+
+        # 🔥 VALIDATIONS
+        if credit <= 0:
+            flash("credit doit etre superieur a zero", "error")
+
+        elif article <= 0:
+            flash("article doit etre superieur a zero", "error")
+
+        elif quantite <= 0:
+            flash("quantite doit etre superieur a zero", "error")
+
+        elif prix_unitaire <= 0:
+            flash("prix doit etre superieur a zero", "error")
+
+        elif montant <= 0:
+            flash("montant doit etre superieur a zero", "error")
+
+        elif montant_payer < 0:
+            flash("montant ne doit pas etre negatif", "error")
+
+        elif rest_a_payer < 0:
+            flash("reste ne doit pas etre negatif", "error")
+
+        else:
+            new_detail_credit = Detail_credit(
+                credit=credit,
+                article=article,
+                quantite=quantite,
+                prix_unitaire=prix_unitaire,
+                montant=montant,
+                montant_payer=montant_payer,
+                rest_a_payer=rest_a_payer
+            )
+
+            db.session.add(new_detail_credit)
+            db.session.commit()
+
+            flash("Détail crédit ajouté!", "success")
+            return redirect(url_for('routes.detail_credit'))
+
+    return render_template("adddetail_credit.html")
+
+
+@routes.route('/detail_credit')
+@login_required
+def detail_credit():
+    detail_credits = Detail_credit.query.all()
+    return render_template("detail_credit.html", detail_credits=detail_credits)
+
+
+@routes.route('/modifdetail_creditAffichage')
+@login_required
+def modifdetail_creditAffiche():
+    detail_credits = Detail_credit.query.all()
+    return render_template("modifdetail_creditAffiche.html", detail_credits=detail_credits)
+
+
+# ✅ correction route
+@routes.route('/modifdetail_credit/<int:id>', methods=['POST'])
+@login_required
+def modifdetail_credit(id):
+    detail_credit = Detail_credit.query.get(id)
+
+    detail_credit.credit = request.form.get('credit')
+    detail_credit.article = request.form.get('article')
+    detail_credit.quantite = request.form.get('quantite')
+    detail_credit.prix_unitaire = request.form.get('prix_unitaire')
+    detail_credit.montant = request.form.get('montant')
+    detail_credit.montant_payer = request.form.get('montant_payer')
+    detail_credit.rest_a_payer = request.form.get('rest_a_payer')
+
+    db.session.commit()
+    return redirect(url_for('routes.modifdetail_creditAffiche'))
+
+
+# ✅ correction route
+@routes.route('/modifdetail_credit/<int:id>', methods=['GET'])
+@login_required
+def detail_credit_update(id):
+    detail_credit = Detail_credit.query.get(id)
+    return render_template('modifdetail_credit.html', detail_credit=detail_credit)
+
+
+@routes.route('/supprimdetail_creditAffichage')
+@login_required
+def supprimdetail_creditAffiche():
+    detail_credits = Detail_credit.query.all()
+    return render_template("supprimdetail_creditAffiche.html", detail_credits=detail_credits)
+
+
+# ✅ correction route
+@routes.route('/supprimdetail_credit/<int:id>')
+@login_required
+def supprimdetail_credit(id):
+    delete_detail_credit = Detail_credit.query.get(id)
+
+    db.session.delete(delete_detail_credit)
+    db.session.commit()
+
+    flash("detail_credit supprimé!", category='success')
+    return redirect(url_for('routes.supprimdetail_creditAffiche'))
+
+# ================= UTILISATEUR =================
+
+@routes.route('/addutilisateur', methods=['GET','POST'])
+@login_required
+def addutilisateur():
+    if request.method == 'POST':
+        nom_user = request.form.get('nom_user')
+        mot_de_passe = request.form.get('mot_de_passe')
+        telephone = request.form.get('telephone')
+        role = request.form.get('role')
+
+        if len(nom_user) < 1:
+            flash("nom trop court", "error")
+        elif len(mot_de_passe) < 1:
+            flash("mot de passe trop court", "error")
+        elif len(telephone) < 1:
+            flash("telephone invalide", "error")
+        elif len(role) < 2:
+            flash("role invalide", "error")
+        else:
+            # HASHAGE ICI ✅
+            mot_de_passe_hash = generate_password_hash(mot_de_passe)
+
+            new_utilisateur = Utilisateur(
+                nom_user=nom_user,
+                mot_de_passe=mot_de_passe_hash,
+                telephone=telephone,
+                role=role
+            )
+
+            db.session.add(new_utilisateur)
+            db.session.commit()
+            flash("utilisateur ajouté !", "success")
+            return redirect(url_for('routes.utilisateur'))
+
+    return render_template("addutilisateur.html")
+
+
+@routes.route('/utilisateur')
+@login_required
+def utilisateur():
+    utilisateurs = Utilisateur.query.all()
+    return render_template("utilisateur.html", utilisateurs=utilisateurs)
+
+
+@routes.route('/modifutilisateurAffichage')
+@login_required
+def modifutilisateurAffiche():
+    utilisateurs = Utilisateur.query.all()
+    return render_template("modifutilisateurAffiche.html", utilisateurs=utilisateurs)
+
+
+# CORRECTION ROUTE ❌ -> <int:id>
+@routes.route('/modifutilisateur/<int:id>', methods=['POST'])
+@login_required
+def modifutilisateur(id):
+    utilisateur = Utilisateur.query.get_or_404(id)
+
+    utilisateur.nom_user = request.form.get('nom_user')
+    utilisateur.telephone = request.form.get('telephone')
+    utilisateur.role = request.form.get('role')
+
+    # HASHAGE SI MODIFIÉ ✅
+    if request.form.get('mot_de_passe'):
+        utilisateur.mot_de_passe = generate_password_hash(request.form.get('mot_de_passe'))
+
+    db.session.commit()
+    flash("utilisateur modifié !", "success")
+    return redirect(url_for('routes.modifutilisateurAffiche'))
+
+
+@routes.route('/modifutilisateur/<int:id>', methods=['GET'])
+@login_required
+def utilisateur_update(id):
+    utilisateur = Utilisateur.query.get_or_404(id)
+    return render_template('modifutilisateur.html', utilisateur=utilisateur)
+
+
+@routes.route('/supprimutilisateurAffichage')
+@login_required
+def supprimutilisateurAffiche():
+    utilisateurs = Utilisateur.query.all()
+    return render_template("supprimutilisateurAffiche.html", utilisateurs=utilisateurs)
+
+
+# CORRECTION ROUTE ❌ -> <int:id>
+@routes.route('/supprimutilisateur/<int:id>')
+@login_required
+def supprimutilisateur(id):
+    delete_utilisateur = Utilisateur.query.get_or_404(id)
+
+    db.session.delete(delete_utilisateur)
+    db.session.commit()
+
+    flash("utilisateur supprimé !", "success")
+    return redirect(url_for('routes.supprimutilisateurAffiche'))
+
+
+
+
+
+
+    user = Utilisateur(
+    nom_user="admin",
+    mot_de_passe=generate_password_hash("1234"),
+    telephone="00000000",
+    role="admin"
+)
+
+db.session.add(user)
+db.session.commit()

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block header %}🛒 Mes ventes{% endblock %}
+
+{% block content %}
+
+<div class="top-actions">
+    <a href="{{ url_for('routes.addvente') }}">➕ Nouvelle vente</a>
+</div>
+
+<div class="search-bar-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher une vente...">
+</div>
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Total</th>
+                <th>Payé</th>
+                <th>Reste</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vente in ventes %}
+            <tr>
+                <td>{{ vente.id }}</td>
+                <td>{{ vente.client.nom if vente.client else "N/A" }}</td>
+                <td>{{ vente.montant_total }} FCFA</td>
+                <td>{{ vente.montant_paye }} FCFA</td>
+                <td>{{ vente.reste }} FCFA</td>
+                <td>
+                    {% if en_retard[vente.id] %}
+                        <span class="badge Annulee">🔴 En retard</span>
+                    {% else %}
+                        <span class="badge
+                            {% if vente.statut == 'complet' %}Complet
+                            {% elif vente.statut == 'precompte' %}Precompte
+                            {% elif vente.statut == 'annulee' %}Annulee
+                            {% else %}Credit{% endif %}">
+                            {{ vente.statut }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('routes.detail_vente', id=vente.id) }}" class="action-btn view">Voir</a>
+                    {% if vente.statut in ['credit', 'precompte'] %}
+                    <a href="{{ url_for('routes.payer_vente', id=vente.id) }}" class="action-btn edit">Payer</a>
+                    {% endif %}
+                    {% if vente.statut != 'annulee' %}
+                    <a href="{{ url_for('routes.annulervente', id=vente.id) }}" class="action-btn cancel"
+                       onclick="return confirm('Annuler cette vente ? Le stock sera remis à jour.')">Annuler</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align:center;color:var(--muted);">Aucune vente</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    document.querySelectorAll(".content-table tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

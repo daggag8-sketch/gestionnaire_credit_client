@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Historique client{% endblock %}
+{% block header %}📜 Historique de {{ client.nom }} {{ client.prenom }}{% endblock %}
+
+{% block content %}
+
+<div class="cardBox">
+    <div class="card">
+        <div>
+            <div class="numbers">{{ total_achete }} FCFA</div>
+            <div class="cardName">Total acheté</div>
+        </div>
+        <div class="iconBx">🛒</div>
+    </div>
+
+    <div class="card">
+        <div>
+            <div class="numbers">{{ total_paye }} FCFA</div>
+            <div class="cardName">Total encaissé</div>
+        </div>
+        <div class="iconBx">✅</div>
+    </div>
+
+    <div class="card">
+        <div>
+            <div class="numbers">{{ total_reste }} FCFA</div>
+            <div class="cardName">Reste à payer</div>
+        </div>
+        <div class="iconBx">⚠️</div>
+    </div>
+</div>
+
+<div class="history-box">
+    <h3>Détails des ventes</h3>
+
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Payé</th>
+                <th>Reste</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vente in ventes %}
+            <tr>
+                <td>{{ vente.id }}</td>
+                <td>{{ vente.date.strftime("%d/%m/%Y") if vente.date else "" }}</td>
+                <td>{{ vente.montant_total }} FCFA</td>
+                <td>{{ vente.montant_paye }} FCFA</td>
+                <td>{{ vente.reste }} FCFA</td>
+                <td>
+                    <span class="badge
+                        {% if vente.statut == 'complet' %}Complet
+                        {% elif vente.statut == 'precompte' %}Precompte
+                        {% elif vente.statut == 'annulee' %}Annulee
+                        {% else %}Credit{% endif %}">
+                        {{ vente.statut }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align:center;color:var(--muted);">Aucune vente pour ce client</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="top-actions" style="margin-top:20px;">
+    <a href="{{ url_for('routes.client') }}">⬅ Retour aux clients</a>
+</div>
+
+{% endblock %}

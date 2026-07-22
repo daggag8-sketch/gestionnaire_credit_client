@@ -1,0 +1,48 @@
+
+{% extends "base.html" %}
+
+{% block title %}Modifier details{% endblock %}
+
+{% block content %}
+
+<h1>Liste des details à modifier</h1>
+
+<div class="table">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Credit</th>
+                <th>Article</th>
+                <th>Quantite</th>
+                <th>Prix_unitaire</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Montant_payer</th>
+                <th>Rest_a_payer</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for detail_credit in detail_credits %}
+            <tr>
+               <td>{{detail_credit.id}}</td>
+                <td>{{detail_credit.credit_rel.client.nom }} {{ detail_credit.credit_rel.client.prenom }}</td>
+                <td>{{ detail_credit.article_rel.nom_art }}</td>
+                <td>{{detail_credit.quantite}}</td>
+                <td>{{detail_credit.prix_unitaire}}</td>
+                <td>{{detail_credit.montant}}</td>
+                <td>{{detail_credit.date}}</td>
+                <td>{{detail_credit.montant_payer}}</td>
+                <td>{{detail_credit.rest_a_payer}}</td>
+               <td>
+                        <a href="{{ url_for('routes.detail_credit_update',id=detail_credit.id)}}"><img src="{{url_for('static',filename='css/images/edit.png')}}" height="22px" width="22px"></a>
+                    </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

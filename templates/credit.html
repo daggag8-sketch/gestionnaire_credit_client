@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block header %}💰 Mes crédits{% endblock %}
+
+{% block content %}
+
+<div class="cardBox">
+    <div class="card">
+        <div>
+            <div class="numbers">{{ total_en_cours }} FCFA</div>
+            <div class="cardName">Total en cours</div>
+        </div>
+        <div class="iconBx">⏳</div>
+    </div>
+    <div class="card">
+        <div>
+            <div class="numbers">{{ total_solde }} FCFA</div>
+            <div class="cardName">Total soldé</div>
+        </div>
+        <div class="iconBx">✅</div>
+    </div>
+    <div class="card">
+        <div>
+            <div class="numbers">{{ credits|length }}</div>
+            <div class="cardName">Nombre de crédits</div>
+        </div>
+        <div class="iconBx">💰</div>
+    </div>
+</div>
+
+<div class="search-bar-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher par client...">
+</div>
+
+<div class="table-container">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Montant total</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for credit in credits %}
+            <tr>
+                <td>{{ credit.id }}</td>
+                <td>{{ credit.client.nom }} {{ credit.client.prenom }}</td>
+                <td>{{ credit.date.strftime('%d/%m/%Y') }}</td>
+                <td>{{ credit.montant_total }} FCFA</td>
+                <td>
+                    {% if infos_credit[credit.id].en_retard %}
+                        <span class="badge Annulee">🔴 En retard</span>
+                    {% else %}
+                        <span class="badge
+                            {% if credit.statut == 'complet' %}Complet
+                            {% elif credit.statut == 'precompte' %}Precompte
+                            {% elif credit.statut == 'annulee' %}Annulee
+                            {% else %}Credit{% endif %}">
+                            {{ credit.statut }}
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('routes.detail_credit', id=credit.id) }}" class="action-btn view">Voir détail</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align:center;color:var(--muted);">Aucun crédit</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let value = this.value.toLowerCase();
+    document.querySelectorAll(".content-table tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

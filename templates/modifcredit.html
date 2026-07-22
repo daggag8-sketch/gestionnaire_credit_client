@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+{% block title %}Modifier Credit{% endblock %}
+
+{% block content %}
+
+<div class="centrage">
+
+    <div class="container-credit">
+
+        <h2>Modifier un credit</h2>
+
+        <form method="POST">
+
+            <input type="number" name="id_client" placeholder="Id_client" value="{{credit.id_client }}" required>
+
+            <input type="number" name="montant_total" placeholder="Montant_total" value="{{credit.montant_total }}" required>
+
+            <input type="text" name="statut" placeholder="Statut" value="{{credit.statut }}" required>
+
+            <input type="submit" value="Modifier">
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

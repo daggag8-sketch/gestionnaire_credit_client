@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Modifier Client{% endblock %}
+
+{% block content %}
+
+<div class="form-box">
+
+    <h2>✏ Modifier un client</h2>
+
+    <form method="POST">
+        <input type="text" name="nom" placeholder="Nom" value="{{ client.nom }}" required>
+        <input type="text" name="prenom" placeholder="Prénom" value="{{ client.prenom }}" required>
+        <input type="text" name="telephone" placeholder="Téléphone" value="{{ client.telephone }}" required>
+        <input type="text" name="adresse" placeholder="Adresse" value="{{ client.adresse }}" required>
+        <button type="submit">Modifier</button>
+    </form>
+
+</div>
+
+{% endblock %}
